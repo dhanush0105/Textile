@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+.dark body {
+  background-color: #111827;
+  color: #f9fafb;
+}
+
+.gold-gradient-bg {
+  background: linear-gradient(135deg, #AA7C11 0%, #D4AF37 50%, #AA7C11 100%);
+}

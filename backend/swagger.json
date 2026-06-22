@@ -1,0 +1,216 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "ATS Veshti E-commerce API",
+    "description": "Complete production REST API documentation for ATS Veshti traditional Tamil heritage brand.",
+    "contact": {
+      "name": "ATS Support Team",
+      "email": "support@atsveshti.com"
+    }
+  },
+  "host": "localhost:5000",
+  "basePath": "/api",
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\""
+    }
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Register a new customer account",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["name", "email", "password"],
+              "properties": {
+                "name": { "type": "string", "example": "Dhanush Kumar" },
+                "email": { "type": "string", "example": "customer@atsveshti.com" },
+                "password": { "type": "string", "example": "user123" },
+                "phone": { "type": "string", "example": "9876543211" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": { "description": "User account created successfully" },
+          "400": { "description": "Invalid payload or user already exists" }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Authenticate user credentials",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["email", "password"],
+              "properties": {
+                "email": { "type": "string", "example": "customer@atsveshti.com" },
+                "password": { "type": "string", "example": "user123" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Token emitted and profile returned" },
+          "401": { "description": "Invalid email or password credentials" }
+        }
+      }
+    },
+    "/auth/profile": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Retrieve user profile details",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": { "description": "User profile object returned" }
+        }
+      },
+      "put": {
+        "tags": ["Authentication"],
+        "summary": "Update user details",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "email": { "type": "string" },
+                "phone": { "type": "string" },
+                "password": { "type": "string" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Profile updated successfully" }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Query and filter product catalog",
+        "parameters": [
+          { "name": "search", "in": "query", "type": "string" },
+          { "name": "category", "in": "query", "type": "string" },
+          { "name": "fabric", "in": "query", "type": "string" },
+          { "name": "borderType", "in": "query", "type": "string" },
+          { "name": "occasion", "in": "query", "type": "string" },
+          { "name": "color", "in": "query", "type": "string" },
+          { "name": "minPrice", "in": "query", "type": "number" },
+          { "name": "maxPrice", "in": "query", "type": "number" },
+          { "name": "sort", "in": "query", "type": "string", "enum": ["priceAsc", "priceDesc", "rating", "new"] }
+        ],
+        "responses": {
+          "200": { "description": "List of products returned" }
+        }
+      },
+      "post": {
+        "tags": ["Products"],
+        "summary": "Create a new product (Admin)",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["name", "description", "price", "category", "fabric", "borderType", "occasion"],
+              "properties": {
+                "name": { "type": "string" },
+                "description": { "type": "string" },
+                "price": { "type": "number" },
+                "category": { "type": "string" },
+                "fabric": { "type": "string" },
+                "borderType": { "type": "string" },
+                "occasion": { "type": "string" },
+                "stock": { "type": "number" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": { "description": "Product created successfully" }
+        }
+      }
+    },
+    "/orders": {
+      "post": {
+        "tags": ["Orders"],
+        "summary": "Place a new purchase order",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["orderItems", "shippingAddress", "paymentMethod", "totalPrice", "finalPrice"],
+              "properties": {
+                "orderItems": { "type": "array", "items": { "type": "object" } },
+                "shippingAddress": { "type": "object" },
+                "paymentMethod": { "type": "string", "enum": ["COD", "Razorpay"] },
+                "totalPrice": { "type": "number" },
+                "finalPrice": { "type": "number" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": { "description": "Order records created, stock decremented, cart cleared" }
+        }
+      }
+    },
+    "/coupons/validate": {
+      "post": {
+        "tags": ["Coupons"],
+        "summary": "Verify and apply a promotional coupon",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["code", "cartTotal"],
+              "properties": {
+                "code": { "type": "string", "example": "WELCOME10" },
+                "cartTotal": { "type": "number", "example": 2000 }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Coupon validated, discount amount returned" },
+          "400": { "description": "Coupon expired, inactive, or purchase limit not met" }
+        }
+      }
+    }
+  }
+}

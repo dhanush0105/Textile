@@ -1,0 +1,32 @@
+# Dependency directories
+**/node_modules/
+node_modules/
+
+# Production build outputs
+**/dist/
+dist/
+**/build/
+build/
+
+# Environment files with sensitive variables
+**/.env
+.env
+**/.env.local
+.env.local
+
+# System/IDE configurations
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs
+**/logs/
+logs/
+**/*.log
+*.log
